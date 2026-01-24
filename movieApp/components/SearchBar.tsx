@@ -5,12 +5,12 @@ import { icons } from '@/constants/icons'
 
 interface Props{ 
     placeholder:string;
+    value?: string, 
+    onChangeText?: (text: string) => void;
     onPress?: ()=> void;
-    value: string, 
-    onChangeText: (text: string) => void;
 }
 
-const SearchBar = ({placeholder, onPress, value, onChangeText}: Props) => {
+const SearchBar = ({placeholder, onPress , onChangeText, value}: Props) => {
   return (
     <View style={styles.view}>
       <Image source={icons.search} tintColor='#ab8bff' resizeMode='contain' />
@@ -19,8 +19,8 @@ const SearchBar = ({placeholder, onPress, value, onChangeText}: Props) => {
         placeholder={placeholder}
         value={value}
         onChangeText={onChangeText}
-        placeholderTextColor="#a8b5db"
         style = {styles.image}
+        placeholderTextColor="#a8b5db"
       />
     </View>
   )

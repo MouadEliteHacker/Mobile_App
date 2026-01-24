@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import colors from '../col'
 import { icons } from '@/constants/icons'
 import { images } from '@/constants/images'
-import { useRouter } from "expo-router";
 import useFetch from "@/services/useFetch"
 import { fetchMovies } from "@/services/api";
 import {updateSearchCount} from "@/services/appwrite";
@@ -18,24 +17,28 @@ const Search = () => {
     error , refetch: loadMovies, reset} = useFetch(() => fetchMovies({ query: searchQuery}), false)
 
   useEffect(() => {
-
-    if (movies?.length! > 0 && movies?.[0]) {
-          updateSearchCount(searchQuery, movies[0]);
-        }
-
     const timeoutId = setTimeout(async () => {
           if(searchQuery.trim()){
-            await loadMovies();
-          }
+            await loadMovies()
+            
+        }
+          
           else{
-            loadMovies();
+            reset();
           }
 
     }, 500)
-    
+
     return () => clearTimeout(timeoutId);
-    loadMovies();
+    
+  
   }, [searchQuery]);
+
+    useEffect(() => {
+          if (searchQuery.trim() && movies?.length! > 0 && movies?.[0]) {
+                updateSearchCount(searchQuery, movies[0]);
+        } }, [movies])
+  
   return (
     <View style= {styles.view}>
       <Image source={images.bg} style = {styles.image} resizeMode='cover'/>

@@ -9,12 +9,18 @@ import useFetch from "@/services/useFetch"
 import { fetchMovies } from "@/services/api";
 import MovieCard from "@/components/MovieCard";
 import { useState } from "react";
+import { getTrendingMovies } from "@/services/appwrite";
+import TrendingCard from "@/components/TrendingCard";
 
 
 export default function Index() {
   const router  = useRouter();
 
-  const[searchQuery, setSearchQuery] = useState('');
+  const {
+    data: trendingMovies,
+    loading: trendingLoading,
+    error: trendingError,
+  } = useFetch(getTrendingMovies); 
 
   const { data: movies, loading: moviesLoading, 
     error: moviesError} = useFetch(() => fetchMovies({ query: ''}))
@@ -27,25 +33,45 @@ export default function Index() {
       }} >
         <Image source={icons.logo} style = {styles.logo} />
 
-        {moviesLoading? (
+        {moviesLoading || trendingLoading ? (
           <ActivityIndicator
           size="large"
           color = "#0000ff"
           style = {{marginTop: 10, alignSelf: "center"}}
           
           />
-        ) : moviesError ? (
-          <Text>Error: {moviesError?.message} </Text>
+        ) : moviesError || trendingError ? (
+          <Text>Error: {moviesError?.message || moviesError?.message} </Text>
         ) : (
         <View style={{flex: 1, marginTop: 13}}> 
-          <SearchBar onPress = {() => router.push("/search")}
-            placeholder='Search Movies ...' 
-            value= {searchQuery}
-            onChangeText = {(text: string) => setSearchQuery(text)}   />
+          <SearchBar 
+             placeholder="Search for a movie"
+              onPress={() => {
+                router.push("/search");
+              }}
+              
+            />
+            {trendingMovies && (
+              <View style= {{marginTop: 15, }}>
+                <Text style={{fontSize: 22, color: 'white', fontWeight: 'bold', marginBottom: 6, }}
+                >Trending Movies</Text>
+                <FlatList 
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                    data={trendingMovies}
+                    renderItem={({item, index}) => (
+                      <TrendingCard movie = {item} index = {index} />
+                    )}     
+                    contentContainerStyle= {{ gap: 26 }}
+                    style = {{marginTop: 5, paddingBottom: 70}}
+                    scrollEnabled= {true}
+            />
+              </View>
+            )}
 
           <>
             <Text  style = {{
-              color: 'white', fontStyle: 'normal', fontSize: 22, marginTop: 12, marginBottom: 9
+              color: 'white', fontWeight: 'bold', fontSize: 22, marginTop: 12, marginBottom: 9
             }}>Latest Movies</Text>
 
             <FlatList 
