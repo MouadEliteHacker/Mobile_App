@@ -9,7 +9,7 @@ const MovieCard = ({id, poster_path, title, vote_average, release_date, populari
     const stars = Math.round(vote_average/2); 
     return ( 
     
-    <Link href ={'/movies/${id}'} asChild>
+    <Link href ={`/movies/${id}`} asChild>
         <TouchableOpacity style= {{width:'30%'}}>
             
             <Image

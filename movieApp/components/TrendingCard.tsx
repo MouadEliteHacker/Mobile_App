@@ -7,7 +7,7 @@ import colors from '@/app/col';
 
 const TrendingCard = ({movie: {movie_id, title, poster_url}, index}: TrendingCardProps) => {
   return (
-    <Link href={'/movies/${movie_id}'} asChild>
+    <Link href={`/movies/${movie_id}`} asChild>
         <TouchableOpacity style= 
         {{width: 128, position: 'relative',  paddingLeft: 20}}>
             <Image 
