@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'expo-router'
 import { icons } from '@/constants/icons';
 import colors from '@/app/col';
@@ -7,6 +7,7 @@ import colors from '@/app/col';
 const MovieCard = ({id, poster_path, title, vote_average, release_date, popularity}: Movie) => {
     // const arrows = popularity/maxPopularity * 10 / 2
     const stars = Math.round(vote_average/2); 
+    const [starState, setStarState] = useState(icons.emptyStar)
     return ( 
     
     <Link href ={`/movies/${id}`} asChild>
@@ -21,6 +22,26 @@ const MovieCard = ({id, poster_path, title, vote_average, release_date, populari
           style= {{width: '100%', height: 190, borderRadius: 12}}
           resizeMode="cover"
         />
+        
+        <TouchableOpacity  style={{position: 'absolute', 
+          alignSelf: 'flex-end', right: 6, top: 6, width: 20, height: 20 }}
+          onPress={() =>{(e:any) =>  e.stopPropagation();
+          setStarState(
+            starState === icons.emptyStar ? icons.favorite : icons.emptyStar
+          );
+          
+          
+          
+
+          }}
+          
+        >
+          
+        <Image 
+        source={starState}
+        style = {{width: 20, height: 20}}
+        resizeMode="cover"
+        /></TouchableOpacity>
 
         <Text style= {{fontWeight: 'bold', color: 'white', marginTop: 5, fontSize: 14}} numberOfLines={1}>
           {title}

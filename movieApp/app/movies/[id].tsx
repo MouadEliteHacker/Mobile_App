@@ -1,10 +1,11 @@
-import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, SafeAreaView, ActivityIndicator } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import colors from '../col'
 import { router, useLocalSearchParams } from 'expo-router'
 import useFetch from '@/services/useFetch'
 import { fetchMovieDetails } from '@/services/api'
 import { icons } from '@/constants/icons'
+import { saveMovie, deleteMovie, isSaved } from '@/services/appwrite'
 
 interface MovieInfoProps {
 
@@ -30,11 +31,41 @@ const MovieInfo = ({ label, value} : MovieInfoProps ) => (
 const MovieDetails = () => {
 
     const { id} = useLocalSearchParams();
-    console.log(id.valueOf)
+    
+    const [starState, setStarState] = useState(icons.emptyStar)
 
     const { data: movie, loading} = useFetch(() => fetchMovieDetails(id as string))
+    
+    useEffect(() => {
+    const checkIfSaved = async () => {
+        if (movie?.id) {
+            const saved = await isSaved(movie.id);
+            setStarState(saved ? icons.favorite : icons.emptyStar);
+        }
+    };
+    
+    checkIfSaved();
+}, [movie?.id]);
 
-    console.log(movie?.poster_path)
+    useEffect(() => {
+        if(!movie?.id)return;
+        if(starState === icons.favorite && movie?.id){
+            saveMovie(movie?.id , movie?.title);
+        }
+        else if (movie){
+            deleteMovie(movie?.id)
+        }
+    }, [starState])
+
+    if (loading){
+        return(
+            <SafeAreaView>
+                <ActivityIndicator/>
+            </SafeAreaView>
+        )
+    }
+
+    
   return (
     <View style= {styles.view}>
       <ScrollView contentContainerStyle={{ paddingBottom: 80 }}>
@@ -44,7 +75,9 @@ const MovieDetails = () => {
             source={{
               uri: `https://image.tmdb.org/t/p/w500${movie?.poster_path}`,
             }}
-            style= {{ height: 500, width: '100%', }}
+            style= {{ height: 500, width: '100%',}}
+            
+            // tintColor={colors.dark[200]}
             resizeMode="stretch"
           />
           </View>
@@ -85,21 +118,35 @@ const MovieDetails = () => {
 
           </View>
        </ScrollView>  
-       <TouchableOpacity
-        style= {{position: 'absolute', bottom: 20, left : 0, right:0, backgroundColor:colors.accent, borderRadius: 8, 
-            display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', zIndex: 50
-        }}
-        onPress={router.back}
-      >
-        <Image
+       <View
+        style= {{position: 'absolute', bottom: 20, left : 4, right:4, 
+             display: 'flex', flexDirection: 'row',  zIndex: 50, gap: 10, 
+        }}>
+        <TouchableOpacity style= {styles.touchable}
+        onPress={router.back}>
+            <Image
           source={icons.arrow}
           style={{ transform: [{ rotate: "180deg" }], marginRight: 4, marginTop: 2, height: 20, width: 20 }}
 
           tintColor="#fff"
         />
         <Text
-        style={{color:'white', fontWeight: 'condensedBold'}}>Go Back</Text>
-      </TouchableOpacity>
+        style={{color:'white', fontWeight: 'condensedBold'}}>Go Back</Text></TouchableOpacity>
+        <TouchableOpacity style= {styles.touchable}
+        onPress={() => setStarState(
+                    starState === icons.emptyStar ? icons.favorite : icons.emptyStar
+                  )}>
+            <Image
+          source={starState}
+          style={{  marginRight: 4, marginTop: 2, height: 16, width: 16 }}
+
+          tintColor="#fff"
+        />
+        <Text
+        style={{color:'white', fontWeight: 'condensedBold'}}>Save Movie</Text></TouchableOpacity>
+        
+        
+      </View>
     </View>
   )
 }
@@ -109,5 +156,10 @@ export default MovieDetails
 const styles = StyleSheet.create({
     view: {
         backgroundColor: colors.primary, flex: 1
+    }, 
+    touchable: {
+        display: 'flex', flexDirection: 'row',alignItems: 'center', 
+            justifyContent: 'center', flex: 1, padding: 8,
+            backgroundColor:colors.accent, borderRadius: 8,
     }
 })

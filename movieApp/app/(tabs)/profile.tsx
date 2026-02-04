@@ -1,10 +1,16 @@
-import { View, Text } from 'react-native'
+import { View, Text, Image } from 'react-native'
 import React from 'react'
+import { images } from '@/constants/images'
+import colors from '../col'
 
 const Profile = () => {
   return (
-    <View>
-      <Text>Profile</Text>
+    <View style={{flex: 1, backgroundColor:colors.primary}}>
+      <Image
+        source={images.bg}
+        style={{position: 'absolute', width: '100%', zIndex:0}}
+        resizeMode="cover"
+      />
     </View>
   )
 }
