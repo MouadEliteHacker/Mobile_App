@@ -48,3 +48,29 @@ def batch_add_movies_from_json(client, filepath):
         except Exception as e:
             print(f"✗ Failed: {movie.get('title', 'Unknown')} - {e}")
 
+def search_movies(client, query: str, limit: int = 5) -> List[Dict]:
+    """Semantic search"""
+    movies = client.collections.get("Movie")
+    
+    response = movies.query.near_text(
+        query=query,
+        limit=limit,
+        return_properties=["movieId", "title", "overview", "releaseDate", 
+                          "voteAverage", "genres", "posterPath"]
+    )
+    
+    return [item.properties for item in response.objects]
+
+def hybrid_search(client, query: str, limit: int = 5, alpha: float = 0.5) -> List[Dict]:
+    """Hybrid search"""
+    movies = client.collections.get("Movie")
+    
+    response = movies.query.hybrid(
+        query=query,
+        alpha=alpha,
+        limit=limit,
+        return_properties=["movieId", "title", "overview", "releaseDate",
+                          "voteAverage", "genres", "posterPath"]
+    )
+    
+    return [item.properties for item in response.objects]        
