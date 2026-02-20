@@ -31,7 +31,7 @@ export default SearchBar
 const styles = StyleSheet.create({
     view:{
         flexDirection: 'row', alignItems: 'center', backgroundColor: colors.dark[200], 
-        paddingVertical: 4, paddingHorizontal: 5, borderRadius: 50, 
+        paddingVertical: 14, paddingHorizontal: 5, borderRadius: 50, marginTop: 10
     }, image: {
         color: 'white'
     }

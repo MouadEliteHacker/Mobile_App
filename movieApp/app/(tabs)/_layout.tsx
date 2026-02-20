@@ -87,11 +87,21 @@ const _layout = () => {
             headerShown: false, 
             tabBarIcon: ({focused}) => (
                 <TabIcon
-                    focused = {focused} icon = {icons.person} title ="Profile" />
+                    focused = {focused} icon = {icons.person} title ="Profile"  />
             )
         }}
         />
-        
+        <Tabs.Screen
+        name = "chatbot"
+        options = {{
+            title :'Chatbot', 
+            headerShown: false, 
+            tabBarIcon: ({focused}) => (
+                <TabIcon
+                    focused = {focused} icon = {icons.chatbot} title ="Chatbot" />
+            )
+        }}
+        />
 
     </Tabs>
   )

@@ -6,10 +6,11 @@ import save from "@/assets/icons/save.png";
 import star from "@/assets/icons/star.png";
 import play from "@/assets/icons/play.png";
 import arrow from "@/assets/icons/arrow.png";
-import upArrow from "@/assets/icons/upArrow.png";
 import favorite from "@/assets/icons/favorite.png" 
 import whiteStar from "@/assets/icons/white-star.png" 
 import emptyStar from "@/assets/icons/empty-star-.png" 
+import submitArrow from "@/assets/icons/submitArrow.png" 
+import chatbot from "@/assets/icons/chatbot.png" 
 
 
 
@@ -22,8 +23,9 @@ export const icons = {
   star,
   play,
   arrow,
-  upArrow, 
   favorite, 
   whiteStar,
-  emptyStar
+  emptyStar, 
+  submitArrow, 
+  chatbot
 };
